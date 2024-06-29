@@ -2,6 +2,7 @@ import math
 import tkinter as tk
 import time
 import matplotlib.pyplot as plt
+import numpy as np
 
 from mesh import *
 
@@ -34,6 +35,14 @@ def ignite_tubular_grain(msh):
                 c.active = True
             else:
                 c.active = False
+
+def low_pass_filter(y, cutoff):
+    n = len(y)
+    fft_y = np.fft.fft(y)
+    fft_y[int(cutoff):int(n-cutoff)] = 0
+    filtered_y = np.fft.ifft(fft_y)
+    
+    return np.real(filtered_y)
 
 def simulate(msh, dt):
     root = tk.Tk()
@@ -89,7 +98,9 @@ def simulate(msh, dt):
 
     root.destroy()
 
-    plt.plot(times, thrusts)
+    thrusts_f = low_pass_filter(thrusts, len(thrusts)//20)
+
+    plt.plot(times, thrusts_f)
     plt.title("Thrust Profile")
     plt.xlabel("Time")
     plt.ylabel("Thrust")

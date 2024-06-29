@@ -32,8 +32,8 @@ class cell:
         if self.s and msh.cells[self.s].fuel > 0:
             burn_rate -= 1
 
-        return burn_rate
-
+        return burn_rate**0.5
+        
     def update_active(self, msh):
         if self.fuel <= 0:
             self.fuel = 0
